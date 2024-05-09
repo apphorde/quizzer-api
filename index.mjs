@@ -26,7 +26,7 @@ const readJson = async (stream) => {
 };
 
 async function onDeckLoad(_request, response, params) {
-  const deck = await store.getResource("deck").get(params.uid);
+  const deck = await store.getResource("deck").get(hash(params.name));
 
   if (deck) {
     response.end(JSON.stringify(deck));
@@ -43,13 +43,16 @@ async function onDeckSave(request, response) {
     return;
   }
 
-  const uid = hash(json.name);
+  const { name, language, pairs } = json;
+  const uid = hash(name);
   const deck = await store.getResource("deck").get(uid);
 
   if (deck) {
     response.writeHead(409, "Exists").end();
     return;
   }
+
+  await store.getResource("deck").set(uid, { name, language, pairs });
 }
 
 async function onSaveFavorites(_request, response, params) {
@@ -75,7 +78,7 @@ async function onRemoveFavorites(_request, response, params) {
 }
 
 const routes = {
-  "GET /deck/:uid": onDeckLoad,
+  "GET /deck/:name": onDeckLoad,
   "POST /deck": onDeckSave,
 
   "GET /fav": onLoadFavorites,
