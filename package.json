@@ -4,7 +4,7 @@
   "description": "",
   "main": "./index.mjs",
   "scripts": {
-    "ci": "echo true",
+    "ci": "npm i",
     "build": "echo true",
     "test": "echo true"
   },

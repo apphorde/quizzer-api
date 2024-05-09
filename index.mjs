@@ -26,7 +26,7 @@ const readJson = async (stream) => {
 };
 
 async function onDeckLoad(_request, response, params) {
-  const deck = await store.getResource("deck").get(params.id);
+  const deck = await store.getResource("deck").get(params.uid);
 
   if (deck) {
     response.end(JSON.stringify(deck));
@@ -38,7 +38,7 @@ async function onDeckLoad(_request, response, params) {
 
 async function onDeckSave(request, response) {
   const json = await readJson(request);
-  if (!json) {
+  if (!json?.name || !Array.isArray(json?.pairs)) {
     response.writeHead(400, "Bad request").end();
     return;
   }
@@ -75,7 +75,7 @@ async function onRemoveFavorites(_request, response, params) {
 }
 
 const routes = {
-  "GET /deck/{uid}": onDeckLoad,
+  "GET /deck/:uid": onDeckLoad,
   "POST /deck": onDeckSave,
 
   "GET /fav": onLoadFavorites,

@@ -1,8 +1,14 @@
 # Quizzer API
 
+## API
+
+### `GET /deck/:id`
+
+Get a deck of word pairs
+
 ### `POST /deck`
 
-Create deck
+Create a deck
 
 ```json
 {
@@ -15,11 +21,11 @@ Create deck
 }
 ```
 
-### `POST /fav/links,left`
+### `POST /fav/links:left`
 
 Store a favorite pair
 
-### `DELETE /fav/links,left`
+### `DELETE /fav/links:left`
 
 Delete a favorite pair
 
