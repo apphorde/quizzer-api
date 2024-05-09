@@ -1,0 +1,15 @@
+{
+  "name": "quizzer-api",
+  "version": "0.0.0",
+  "description": "",
+  "main": "./index.mjs",
+  "scripts": {
+    "ci": "echo true",
+    "build": "echo true",
+    "test": "echo true"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "micro-router": "^1.0.2"
+  }
+}
