@@ -10,6 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@cloud-cli/http": "^1.0.0",
     "micro-router": "^1.0.2"
   }
 }

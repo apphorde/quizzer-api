@@ -1,7 +1,7 @@
 import router from "micro-router";
 import { Store } from "./store.mjs";
 import { createHash } from "node:crypto";
-import { createServer } from "node:http";
+import createServer from "@cloud-cli/http";
 
 const store = Store.get(process.env.STORE_ID);
 const notFound = (response) => response.writeHead(404, "Not found").end();
@@ -86,7 +86,4 @@ const routes = {
   "DELETE /fav/:pair": onRemoveFavorites,
 };
 
-const port = process.env.PORT;
-createServer(router(routes)).listen(port, () => {
-  console.log("Started API on port " + port);
-});
+createServer(router(routes));
