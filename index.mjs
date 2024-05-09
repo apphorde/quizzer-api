@@ -67,7 +67,9 @@ async function onDeckSave(request, response) {
   await store
     .getResource("deck")
     .set(uid, { name, language, created: new Date().toISOString() });
+
   await store.getResource("deckpairs").set(uid, { pairs });
+  response.end("OK");
 }
 
 async function onSaveFavorites(_request, response, params) {
