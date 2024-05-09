@@ -53,7 +53,11 @@ async function onDeckSave(request, response) {
 
   const { name, language, pairs } = json;
   const uid = hash(name);
-  const deck = await store.getResource("deck").get(uid);
+  let deck = null;
+
+  try {
+    deck = await store.getResource("deck").get(uid);
+  } catch {}
 
   if (deck) {
     response.writeHead(409, "Exists").end();
