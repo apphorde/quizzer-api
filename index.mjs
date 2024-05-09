@@ -6,6 +6,7 @@ import createServer from "@cloud-cli/http";
 const store = Store.get(process.env.STORE_ID);
 const notFound = (response) => response.writeHead(404, "Not found").end();
 const hash = (s) => createHash("sha256").update(s).digest("hex");
+
 const readStream = (stream) => {
   return new Promise((resolve, reject) => {
     const all = [];
@@ -26,14 +27,21 @@ const readJson = async (stream) => {
 };
 
 async function onDeckLoad(_request, response, params) {
-  const deck = await store.getResource("deck").get(hash(params.name));
+  const uid = hash(params.name);
+  const deck = await store.getResource("deck").get(uid);
 
   if (deck) {
-    response.end(JSON.stringify(deck));
+    const { pairs } = await store.getResource("deckpairs").get(uid);
+    response.end(JSON.stringify({ ...deck, pairs }));
     return;
   }
 
   notFound(response);
+}
+
+async function onDeckList(_request, response, params) {
+  const list = await store.getResource("deck").list();
+  response.end(JSON.stringify(list || []));
 }
 
 async function onDeckSave(request, response) {
@@ -52,7 +60,10 @@ async function onDeckSave(request, response) {
     return;
   }
 
-  await store.getResource("deck").set(uid, { name, language, pairs });
+  await store
+    .getResource("deck")
+    .set(uid, { name, language, created: new Date().toISOString() });
+  await store.getResource("deckpairs").set(uid, { pairs });
 }
 
 async function onSaveFavorites(_request, response, params) {
@@ -79,6 +90,7 @@ async function onRemoveFavorites(_request, response, params) {
 
 const routes = {
   "GET /deck/:name": onDeckLoad,
+  "GET /deck": onDeckList,
   "POST /deck": onDeckSave,
 
   "GET /fav": onLoadFavorites,
