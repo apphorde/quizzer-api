@@ -53,7 +53,7 @@ async function onDeckSave(request, response) {
 }
 
 async function onSaveFavorites(_request, response, params) {
-  const [front, back] = params.pair.split(",");
+  const [front, back] = params.pair.split(":");
   await store.getResource("favorites").set(hash(params.pair), [front, back]);
   response.end("OK");
 }
