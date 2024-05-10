@@ -69,13 +69,18 @@ async function onDeckSave(request, response) {
     .set(uid, { name, language, created: new Date().toISOString() });
 
   await store.getResource("deckpairs").set(uid, { pairs });
-  response.end("OK");
+  response.end('{"ok": true}');
 }
 
 async function onSaveFavorites(_request, response, params) {
   const [front, back] = params.pair.split(":");
-  await store.getResource("favorites").set(hash(params.pair), [front, back]);
-  response.end("OK");
+  await store
+    .getResource("favorites")
+    .set(hash(params.pair), [
+      decodeURIComponent(front),
+      decodeURIComponent(back),
+    ]);
+  response.end('{"ok": true}');
 }
 
 async function onLoadFavorites(_request, response) {
