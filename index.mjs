@@ -44,7 +44,7 @@ async function onDeckList(_request, response, params) {
   response.end(JSON.stringify(list || []));
 }
 
-async function onDeckSave(request, response) {
+async function onDeckSave(request, response, _args, params) {
   const json = await readJson(request);
   if (!json?.name || !Array.isArray(json?.pairs)) {
     response.writeHead(400, "Bad request").end();
@@ -59,7 +59,7 @@ async function onDeckSave(request, response) {
     deck = await store.getResource("deck").get(uid);
   } catch {}
 
-  if (deck) {
+  if (deck && !params.overwrite) {
     response.writeHead(409, "Exists").end();
     return;
   }
@@ -69,6 +69,7 @@ async function onDeckSave(request, response) {
     .set(uid, { name, language, created: new Date().toISOString() });
 
   await store.getResource("deckpairs").set(uid, { pairs });
+
   response.end('{"ok": true}');
 }
 
@@ -103,6 +104,7 @@ const routes = {
   "GET /deck/:name": onDeckLoad,
   "GET /deck": onDeckList,
   "POST /deck": onDeckSave,
+  "PUT /deck": (r, s, t, a) => onDeckSave(r, s, t, { ...a, overwrite: true }),
 
   "GET /fav": onLoadFavorites,
   "POST /fav/:pair": onSaveFavorites,
