@@ -51,7 +51,7 @@ async function onDeckSave(request, response, _args, params) {
     return;
   }
 
-  const { name, language, pairs } = json;
+  const { name, title = '', language, pairs } = json;
   const uid = hash(name);
   let deck = null;
 
@@ -66,7 +66,7 @@ async function onDeckSave(request, response, _args, params) {
 
   await store
     .getResource("deck")
-    .set(uid, { name, language, created: new Date().toISOString() });
+    .set(uid, { name, title: title.slice(0, 128), language, created: new Date().toISOString() });
 
   await store.getResource("deckpairs").set(uid, { pairs });
 
